@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb://localhost:27017/autentikator",
+  "jwtSecret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpDb3JwIFJlcCIsImlhdCI6MTUxNjIzOTAyMn0.BlUWuGU_XTOchQWixt3TK1VZ_nN8aSbe33QP8knqqVY"
+}
