@@ -26,28 +26,41 @@ router.post(
   '/register',
   [
     check('email', 'Email is not valid').isEmail(),
-    check('password', 'Password is required').not().isEmpty()
+    check('username', 'Username is required').not().isEmpty(),
+    check('password', 'Password is required').not().isEmpty(),
   ],
   async (req, res) => {
     try {
-      let { email, password } = req.body
+      let { firstname, lastname, email, phone, username, password } = req.body
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
         return res.status(401).json({ errors: errors.array() })
       }
 
-      let user = await UserSchema.findOne({ email })
+      let userByUsername = await UserSchema.findOne({ username })
+      let userByEmail = await UserSchema.findOne({ email })
+      let userByPhone = await UserSchema.findOne({ phone })
 
-      if (user) {
-        return res.status(401).json({ msg: 'User already exists' })
+      if (userByEmail) {
+        return res.status(401).json({ msg: 'User with this email already registered!' })
+      }
+      if (userByPhone) {
+        return res.status(401).json({ msg: 'User with this phone number already registered!' })
+      }
+      if (userByUsername) {
+        return res.status(401).json({ msg: 'User with this username already registered!' })
       }
 
       const salt = await bcrypt.genSalt(10)
       password = await bcrypt.hash(password, salt)
 
       user = UserSchema({
+        firstname,
+        lastname,
         email,
+        phone,
+        username,
         password
       })
 
@@ -66,7 +79,7 @@ router.post(
           if (err) {
             return res.status(500).json({ msg: 'Token generating error' })
           }
-          res.json({ token })
+          res.json({ token, username })
         }
       )
     } catch (error) {
@@ -79,19 +92,19 @@ router.post(
 router.post(
   '/login',
   [
-    check('email', 'Email is not valid').isEmail(),
+    check('username', 'Username is required').not().isEmpty(),
     check('password', 'Password is required').not().isEmpty()
   ],
   async (req, res) => {
     try {
-      let { email, password } = req.body
+      let { username, password } = req.body
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
         return res.status(401).json({ errors: errors.array() })
       }
 
-      let user = await UserSchema.findOne({ email })
+      let user = await UserSchema.findOne({ username })
 
       if (!user) {
         return res.status(401).json({ msg: 'User is not registered' })
@@ -116,7 +129,7 @@ router.post(
           if (err) {
             return res.status(500).json({ msg: 'Token generating error' })
           }
-          res.json({ token })
+          res.json({ token, username })
         }
       )
     } catch (error) {
