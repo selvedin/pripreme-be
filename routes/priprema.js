@@ -43,7 +43,6 @@ ProtectedRoutes.get(
   async (req, res) => {
     try {
       const user = await UserSchema.findById(req.user.id).select('firstname lastname')
-      console.log({ user })
       const pripreme = await PripremaSchema.find({ nastavnik: user.firstname + ' ' + user.lastname })
       res.json(pripreme)
     } catch (error) {
@@ -72,8 +71,8 @@ ProtectedRoutes.get(
   '/view',
   async (req, res) => {
     try {
-      const { id } = req.params
-      const priprema = await PripremaSchema.findOne({ id })
+      const { id } = req.query
+      const priprema = await PripremaSchema.findById({ _id: id })
       res.json(priprema)
     } catch (error) {
       console.log(error)
@@ -90,7 +89,7 @@ ProtectedRoutes.post(
   ],
   async (req, res) => {
     try {
-      let {
+      let loadedData = {
         skolskaGodina,
         nastavnik,
         razred,
@@ -120,52 +119,41 @@ ProtectedRoutes.post(
         zavrsniSadrzaj,
         domaciRad
       } = req.body
+
+      let { _id } = req.body
+      console.log({ _id })
+
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
         return res.status(401).json({ errors: errors.array() })
       }
 
-      let existingPriprema = await PripremaSchema.findOne({ skolskaGodina, nastavnik, razred, predmet })
+      if (_id) {
+        PripremaSchema.findByIdAndUpdate({ _id }, { ...loadedData }, (err, result) => {
+          if (err) {
+            console.log('no update')
+          }
+          else {
+            res.send(result)
+          }
+        })
+      }
 
+      //remove empty id
+      delete loadedData._id
+
+      let priprema = PripremaSchema({ ...loadedData })
+
+      let existingPriprema = await PripremaSchema.findOne({ skolskaGodina, nastavnik, razred, predmet })
       if (existingPriprema) {
         return res.status(401).json({ msg: 'Priprema za ovu skolsku godinu iz ovog predmeta za ovaj razred vec postoji u bazi.' })
       }
 
-      priprema = PripremaSchema({
-        skolskaGodina,
-        nastavnik,
-        razred,
-        predmet,
-        datum,
-        nastavnaOblast,
-        nastavnaJedinica,
-        ciljeviOdgojni,
-        ciljeviObrazovni,
-        ciljeviFunkcionalni,
-        ciljeviDuhovni,
-        strukturaCasa,
-        tipCasa,
-        obliciNastavnogRada,
-        nastavniObjekti,
-        nastavniPomagala,
-        korelacija,
-        lokacija,
-        planTable,
-        literatura,
-        nastavneMetode,
-        uvodniTrajanje,
-        uvodniSadrzaj,
-        glavniTrajanje,
-        glavniSadrzaj,
-        zavrsniTrajanje,
-        zavrsniSadrzaj,
-        domaciRad
-      })
-
       await priprema.save()
 
       res.json({ priprema })
+
     } catch (error) {
       console.log(error)
       return res.status(500).json({ msg: 'Server error ...' })
