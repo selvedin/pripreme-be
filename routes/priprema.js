@@ -1,16 +1,50 @@
 const express = require('express')
-const router = express.Router()
+const ProtectedRoutes = express.Router()
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
+const auth = require('../middleware/auth')
 const PripremaSchema = require('../models/Priprema')
+const UserSchema = require('../models/User')
 
-router.get(
+
+ProtectedRoutes.use((req, res, next) => {
+
+  // check header for the token
+  var token = req.headers['x-auth-token'];
+
+  // decode token
+  if (token) {
+
+    // verifies secret and checks if the token is expired
+    jwt.verify(token, config.get('jwtSecret'), (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: 'You have to be authenticated' });
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        next();
+      }
+    });
+
+  } else {
+
+    // if there is no token  
+
+    res.status(401).send({ msg: 'You have no permission to access this link' });
+
+  }
+});
+
+ProtectedRoutes.get(
   '/',
+  auth,
   async (req, res) => {
     try {
-      const pripreme = await PripremaSchema.find()
+      const user = await UserSchema.findById(req.user.id).select('firstname lastname')
+      console.log({ user })
+      const pripreme = await PripremaSchema.find({ nastavnik: user.firstname + ' ' + user.lastname })
       res.json(pripreme)
     } catch (error) {
       console.log(error)
@@ -19,7 +53,7 @@ router.get(
   }
 )
 
-router.delete(
+ProtectedRoutes.delete(
   '/',
   async (req, res) => {
     try {
@@ -34,7 +68,7 @@ router.delete(
   }
 )
 
-router.get(
+ProtectedRoutes.get(
   '/view',
   async (req, res) => {
     try {
@@ -48,7 +82,7 @@ router.get(
   }
 )
 
-router.post(
+ProtectedRoutes.post(
   '/save',
   [
     check('skolskaGodina', 'Polje Skolska godina je obavezno').not().isEmpty(),
@@ -139,4 +173,4 @@ router.post(
   }
 )
 
-module.exports = router
+module.exports = ProtectedRoutes
