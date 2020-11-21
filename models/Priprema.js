@@ -11,6 +11,10 @@ let PripremaSchema = mongoose.Schema({
     required: true,
     maxlength: 256
   },
+  nastavnik_id: {
+    type: String,
+    required: true
+  },
   razred: {
     type: String,
     maxlength: 20,

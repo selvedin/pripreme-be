@@ -54,6 +54,7 @@ ProtectedRoutes.get(
 
 ProtectedRoutes.delete(
   '/',
+  auth,
   async (req, res) => {
     try {
       const { _id } = req.body
@@ -69,6 +70,7 @@ ProtectedRoutes.delete(
 
 ProtectedRoutes.get(
   '/view',
+  auth,
   async (req, res) => {
     try {
       const { id } = req.query
@@ -87,6 +89,7 @@ ProtectedRoutes.post(
     check('skolskaGodina', 'Polje Skolska godina je obavezno').not().isEmpty(),
     check('razred', 'Polje Razred je obavezno').not().isEmpty(),
   ],
+  auth,
   async (req, res) => {
     try {
       let loadedData = {
@@ -121,7 +124,6 @@ ProtectedRoutes.post(
       } = req.body
 
       let { _id } = req.body
-      console.log({ _id })
 
       const errors = validationResult(req)
 
@@ -130,7 +132,7 @@ ProtectedRoutes.post(
       }
 
       if (_id) {
-        PripremaSchema.findByIdAndUpdate({ _id }, { ...loadedData }, (err, result) => {
+        PripremaSchema.findByIdAndUpdate({ _id }, { ...loadedData, nastavnik_id: req.user.id }, (err, result) => {
           if (err) {
             console.log('no update')
           }
@@ -143,7 +145,7 @@ ProtectedRoutes.post(
       //remove empty id
       delete loadedData._id
 
-      let priprema = PripremaSchema({ ...loadedData })
+      let priprema = PripremaSchema({ ...loadedData, nastavnik_id: req.user.id })
 
       let existingPriprema = await PripremaSchema.findOne({ skolskaGodina, nastavnik, razred, predmet })
       if (existingPriprema) {
