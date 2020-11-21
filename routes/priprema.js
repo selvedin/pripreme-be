@@ -19,6 +19,35 @@ router.get(
   }
 )
 
+router.delete(
+  '/',
+  async (req, res) => {
+    try {
+      const { _id } = req.body
+      await PripremaSchema.findOneAndDelete({ _id });
+      const pripreme = await PripremaSchema.find()
+      res.json(pripreme)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ msg: 'Server error ...' })
+    }
+  }
+)
+
+router.get(
+  '/view',
+  async (req, res) => {
+    try {
+      const { id } = req.params
+      const priprema = await PripremaSchema.findOne({ id })
+      res.json(priprema)
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ msg: 'Server error ...' })
+    }
+  }
+)
+
 router.post(
   '/save',
   [
