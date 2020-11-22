@@ -6,7 +6,7 @@ const connectToDB = async () => {
     await mongoose.connect(
       config.get('mongoURI'), {
       useCreateIndex: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
       useUnifiedTopology: true,
       useNewUrlParser: true
     }

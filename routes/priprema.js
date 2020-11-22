@@ -20,7 +20,7 @@ ProtectedRoutes.use((req, res, next) => {
     // verifies secret and checks if the token is expired
     jwt.verify(token, config.get('jwtSecret'), (err, decoded) => {
       if (err) {
-        return res.status(401).json({ message: 'You have to be authenticated' });
+        return res.status(401).json({ message: 'Morate biti prijavljeni' });
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
@@ -32,7 +32,7 @@ ProtectedRoutes.use((req, res, next) => {
 
     // if there is no token  
 
-    res.status(401).send({ msg: 'You have no permission to access this link' });
+    res.status(401).send({ msg: 'Nemate dozvolu za prisup ovom dijelu aplikacije' });
 
   }
 });
@@ -47,7 +47,7 @@ ProtectedRoutes.get(
       res.json(pripreme)
     } catch (error) {
       console.log(error)
-      return res.status(500).json({ msg: 'Server error ...' })
+      return res.status(500).json({ msg: 'Greška na serveru ...' })
     }
   }
 )
@@ -63,7 +63,7 @@ ProtectedRoutes.delete(
       res.json(pripreme)
     } catch (error) {
       console.log(error)
-      return res.status(500).json({ msg: 'Server error ...' })
+      return res.status(500).json({ msg: 'Greška na serveru ...' })
     }
   }
 )
@@ -78,7 +78,7 @@ ProtectedRoutes.get(
       res.json(priprema)
     } catch (error) {
       console.log(error)
-      return res.status(500).json({ msg: 'Server error ...' })
+      return res.status(500).json({ msg: 'Greška na serveru ...' })
     }
   }
 )
@@ -134,31 +134,32 @@ ProtectedRoutes.post(
       if (_id) {
         PripremaSchema.findByIdAndUpdate({ _id }, { ...loadedData, nastavnik_id: req.user.id }, (err, result) => {
           if (err) {
-            console.log('no update')
+            res.status(500).json({ msg: 'Greška prilikom snimanje pripreme' })
           }
           else {
             res.send(result)
           }
         })
       }
+      else {
+        //remove empty id
+        delete loadedData._id
 
-      //remove empty id
-      delete loadedData._id
+        let priprema = PripremaSchema({ ...loadedData, nastavnik_id: req.user.id })
 
-      let priprema = PripremaSchema({ ...loadedData, nastavnik_id: req.user.id })
+        let existingPriprema = await PripremaSchema.findOne({ skolskaGodina, nastavnik, razred, predmet })
+        if (existingPriprema) {
+          return res.status(401).json({ msg: 'Priprema za ovu skolsku godinu iz ovog predmeta za ovaj razred vec postoji u bazi.' })
+        }
 
-      let existingPriprema = await PripremaSchema.findOne({ skolskaGodina, nastavnik, razred, predmet })
-      if (existingPriprema) {
-        return res.status(401).json({ msg: 'Priprema za ovu skolsku godinu iz ovog predmeta za ovaj razred vec postoji u bazi.' })
+        await priprema.save()
+
+        res.json({ priprema })
       }
-
-      await priprema.save()
-
-      res.json({ priprema })
 
     } catch (error) {
       console.log(error)
-      return res.status(500).json({ msg: 'Server error ...' })
+      return res.status(500).json({ msg: 'Greška na serveru ...' })
     }
   }
 )
