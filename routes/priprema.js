@@ -1,43 +1,11 @@
-const express = require('express')
-const ProtectedRoutes = express.Router()
-const jwt = require('jsonwebtoken')
-const config = require('config')
-const bcrypt = require('bcryptjs')
+const PripremaRoute = require('./ProtectedRoute')
 const { check, validationResult } = require('express-validator')
 const auth = require('../middleware/auth')
 const PripremaSchema = require('../models/Priprema')
 const UserSchema = require('../models/User')
 
 
-ProtectedRoutes.use((req, res, next) => {
-
-  // check header for the token
-  var token = req.headers['x-auth-token'];
-
-  // decode token
-  if (token) {
-
-    // verifies secret and checks if the token is expired
-    jwt.verify(token, config.get('jwtSecret'), (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: 'Morate biti prijavljeni' });
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;
-        next();
-      }
-    });
-
-  } else {
-
-    // if there is no token  
-
-    res.status(401).send({ msg: 'Nemate dozvolu za prisup ovom dijelu aplikacije' });
-
-  }
-});
-
-ProtectedRoutes.get(
+PripremaRoute.get(
   '/',
   auth,
   async (req, res) => {
@@ -52,7 +20,7 @@ ProtectedRoutes.get(
   }
 )
 
-ProtectedRoutes.delete(
+PripremaRoute.delete(
   '/',
   auth,
   async (req, res) => {
@@ -68,7 +36,7 @@ ProtectedRoutes.delete(
   }
 )
 
-ProtectedRoutes.get(
+PripremaRoute.get(
   '/view',
   auth,
   async (req, res) => {
@@ -83,7 +51,7 @@ ProtectedRoutes.get(
   }
 )
 
-ProtectedRoutes.post(
+PripremaRoute.post(
   '/save',
   [
     check('skolskaGodina', 'Polje Skolska godina je obavezno').not().isEmpty(),
@@ -165,4 +133,4 @@ ProtectedRoutes.post(
   }
 )
 
-module.exports = ProtectedRoutes
+module.exports = PripremaRoute

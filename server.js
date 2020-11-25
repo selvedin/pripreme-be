@@ -19,6 +19,7 @@ connectToDB()
 app.use('/', require('./routes/main'))
 app.use('/api/users', require('./routes/auth'))
 app.use('/api/priprema', require('./routes/priprema'))
+app.use('/api/exports', require('./routes/exports'))
 
 const PORT = process.env.PORT || 3210
 
