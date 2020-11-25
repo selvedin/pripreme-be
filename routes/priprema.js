@@ -120,6 +120,7 @@ ProtectedRoutes.post(
         glavniSadrzaj,
         zavrsniTrajanje,
         zavrsniSadrzaj,
+        korekcija,
         domaciRad
       } = req.body
 
@@ -134,7 +135,7 @@ ProtectedRoutes.post(
       if (_id) {
         PripremaSchema.findByIdAndUpdate({ _id }, { ...loadedData, nastavnik_id: req.user.id }, (err, result) => {
           if (err) {
-            res.status(500).json({ msg: 'Greška prilikom snimanje pripreme' })
+            res.status(500).json({ msg: 'Greška prilikom snimanje pripreme', error: err.message })
           }
           else {
             res.send(result)

@@ -100,6 +100,9 @@ let PripremaSchema = mongoose.Schema({
   zavrsniSadrzaj: {
     type: String
   },
+  korekcija: {
+    type: String
+  },
   domaciRad: {
     type: String
   }
