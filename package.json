@@ -19,5 +19,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.14",
     "pdf-creator-node": "^1.4.1"
+  },
+  "devDependencies": {
+    "handlebars": "^4.5.0"
   }
 }

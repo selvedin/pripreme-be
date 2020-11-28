@@ -3,43 +3,31 @@ const auth = require('../middleware/auth')
 const pdf = require("pdf-creator-node")
 const fs = require('fs')
 const path = require('path')
+const PripremaSchema = require('../models/Priprema')
+const { findOne } = require('../models/Priprema')
 
 // Read HTML Template
 const html = fs.readFileSync(path.resolve(__dirname, "../templates/html/pdf.html"), 'utf8')
 
 const options = {
-  format: "A3",
+  format: "A4",
   orientation: "portrait",
-  border: "10mm",
+  border: "5mm",
   header: {
-    height: "45mm",
-    contents: '<div style="text-align: center;">Author: Shyam Hajare</div>'
+    height: "15mm",
+    contents: '<div>Priprema</div>'
   },
   "footer": {
-    "height": "28mm",
+    "height": "10mm",
     "contents": {
-      first: 'Cover page',
+      first: '',
       2: 'Second page', // Any page number is working. 1-based index
       default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-      last: 'Last Page'
+      last: ''
     }
   }
 }
 
-const users = [
-  {
-    name: "Shyam",
-    age: "26"
-  },
-  {
-    name: "Navjot",
-    age: "26"
-  },
-  {
-    name: "Vitthal",
-    age: "26"
-  }
-]
 
 ExportsRoute.get(
   '/pdf',
@@ -47,12 +35,14 @@ ExportsRoute.get(
   async (req, res) => {
     try {
       const { name, id } = req.query
+      const priprema = await PripremaSchema.findOne({ _id: id })
       const document = {
         html: html,
         data: {
-          users: users
+          title: name,
+          priprema: mapPriprema(priprema),
         },
-        path: path.resolve(__dirname, "../outputs/pdfs/export.pdf")
+        path: path.resolve(__dirname, "../outputs/pdfs/" + name + ".pdf")
       }
 
       let fileName = ''
@@ -74,5 +64,13 @@ ExportsRoute.get(
     }
   }
 )
+
+const mapPriprema = (priprema) => {
+  let predmet = []
+  for (let pr in priprema) {
+    predmet[pr] = priprema[pr]
+  }
+  return predmet
+}
 
 module.exports = ExportsRoute
