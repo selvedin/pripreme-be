@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <mate charest="utf-8" />
+    <title>{{title}}</title>
+    <style>
+      table {
+        width: 100%;
+      }
+
+      .content-text {
+        border-bottom: 1px solid gray;
+      }
+
+      .content-title {
+        border-bottom: 2px solid gray;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .bordered {
+        padding: 10px;
+        border: 1px solid gray;
+      }
+
+      .space {
+        display: block;
+        height: 30px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="2">NASTAVNI PREDMET: ({{predmet}})</td>
+          <td colspan="8" class="content-text">{{priprema.predmet}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">RAZRED I ODJELJENJE: </td>
+          <td colspan="8" class="content-text">{{priprema.razred}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">DATUM: </td>
+          <td colspan="8" class="content-text">{{priprema.datum}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">ŠKOLSKA GODINA: </td>
+          <td colspan="8" class="content-text">{{priprema.skolskaGodina}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">NASTAVNA JEDINKA: </td>
+          <td colspan="8" class="content-text">{{priprema.nastavnaJedinica}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">TIP ČASA: </td>
+          <td colspan="8" class="content-text">{{priprema.tipCasa}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">CILJ ČASA: </td>
+          <td colspan="8"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">a) OBRAZOVNI: </td>
+          <td colspan="7" class="content-text">{{priprema.ciljeviObrazovni}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">b) ODGOJNI: </td>
+          <td colspan="7" class="content-text">{{priprema.ciljeviOdgojni}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">c) FUNKCIONALNI: </td>
+          <td colspan="7" class="content-text">{{priprema.ciljeviFunkcionalni}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">d) DUHOVNI: </td>
+          <td colspan="7" class="content-text">{{priprema.ciljeviDuhovni}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">OBLICI RADA: </td>
+          <td colspan="8" class="content-text">{{priprema.obliciNastavnogRada}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">METODE NASTAVNOG RADA: </td>
+          <td colspan="8" class="content-text">{{priprema.nastavneMetode}}</td>
+        </tr>
+        <tr>
+          <td colspan="2">NASTAVNA SREDSTVA: </td>
+          <td colspan="8" class="content-text">{{priprema.nastavniPomagala}}</td>
+        </tr>
+        <tr>
+          <td colspan="10" class="space"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="content-title">TOK NASTAVNOG RADA – STRUKTURA ČASA </td>
+        </tr>
+        <tr>
+          <td colspan="10"></td>
+        </tr>
+        <tr>
+          <td colspan="10">UVODNI DIO ({{priprema.uvodniTrajanje}} minuta)</td>
+        </tr>
+        <tr>
+          <td colspan="10"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="bordered"> {{{ priprema.uvodniSadrzaj }}}</td>
+        </tr>
+        <tr>
+          <td colspan="10" class="space"></td>
+        </tr>
+        <tr>
+          <td colspan="10">GLAVNI DIO ({{priprema.glavniTrajanje}} minuta)</td>
+        </tr>
+        <tr>
+          <td colspan="10"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="bordered">{{{ priprema.glavniSadrzaj }}}</td>
+        </tr>
+        <tr>
+          <td colspan="10" class="space"></td>
+        </tr>
+        <tr>
+          <td colspan="10">ZAVRŠNI DIO ({{priprema.zavrsniTrajanje}} minuta)</td>
+        </tr>
+        <tr>
+          <td colspan="10"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="bordered">{{{priprema.zavrsniSadrzaj }}}</td>
+        </tr>
+        <tr>
+          <td colspan="10"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="space"></td>
+        </tr>
+        <tr>
+          <td colspan="2">KOREKCIJA - DOPUNA </td>
+          <td colspan="8"></td>
+        </tr>
+        <tr>
+          <td colspan="10" class="bordered">{{{priprema.korekcija }}}</td>
+        </tr>
+        <tr>
+          <td colspan="10" class="space"></td>
+        </tr>
+      </tbody>
+    </table>
+    <hr />
+    <div>
+      <p>
+      <div style="display: inline-block; width:15%;">Nastavnik: </div>
+      <div style="display: inline-block;width:30%;" class="content-text">{{priprema.nastavnik}}</div>
+      <div style="display: inline-block;width:15%;">Pregledao: </div>
+      <div style="display: inline-block;width:30%;" class="content-text"></div>
+      </p>
+    </div>
+  </body>
+
+</html>
