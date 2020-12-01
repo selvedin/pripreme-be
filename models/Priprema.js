@@ -31,11 +31,11 @@ let PripremaSchema = mongoose.Schema({
   },
   nastavnaOblast: {
     type: String,
-    maxlength: 20
+    maxlength: 256
   },
   nastavnaJedinica: {
     type: String,
-    maxlength: 20
+    maxlength: 256
   },
   ciljeviOdgojni: {
     type: String
